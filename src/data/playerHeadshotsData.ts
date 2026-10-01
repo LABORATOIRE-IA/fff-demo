@@ -1,0 +1,23 @@
+export const PLAYER_HEADSHOTS: Record<string, string> = {
+  'Mike Maignan': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/932290dc27718ee1faef74bd6a4a6573.png?twic=v1/focus=432x192',
+  'Jules Koundé': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/f9363daf3d2ba4afafb76501b43d98d7.png?twic=v1/focus=359x226',
+  'Dayot Upamecano': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/6ea81b688679f8c7c8f5a7548edca82b.png?twic=v1/focus=324x187',
+  'William Saliba': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/bf0a7ec3105e50ec3ab85fc385b354ba.png?twic=v1/focus=336x192/cover=380x296',
+  'Lucas Digne': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/3dd7cb2b58120608786018114e78ddfb.png?twic=v1/focus=444x177/cover=380x296',
+  "N'Golo Kanté": 'https://fff.twic.pics/https://media.fff.fr/uploads/images/5f84991041d63ea47b6840f12b764c7d.png?twic=v1/focus=478x230/cover=380x296',
+  'Manu Koné': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/08a23bf3db7641f2d684b468701d3f01.png?twic=v1/focus=373x201',
+  'Mattéo Guendouzi': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/8799265f5927b97ddb3dfe46943917d3.png?twic=v1/focus=1255x643/cover=380x296',
+  'Ousmane Dembélé': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/564683a99ff82dbb62982478c185ced9.png?twic=v1/focus=377x221',
+  'Randal Kolo Muani': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/25134650a0e9e4866812b5f4b7654837.png?twic=v1/focus=380x183/cover=380x296',
+  'Marcus Thuram': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/b6c575766c446f10634e366e142e9528.png?twic=v1/focus=348x185/cover=380x296',
+  'Bradley Barcola': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/24b441d43cc16ff2b9f238d4357ad948.png?twic=v1/focus=330x185',
+  'Eduardo Camavinga': 'https://fff.twic.pics/https://media.fff.fr/uploads/images/a64a7db29195ddfb675546126f8d8ed1.png?twic=v1/focus=345x220',
+  'Kylian Mbappé': '/assets/player_avatar_mbappe_square.jpg',
+  'Timothy Castagne': 'https://belgianfootball.s3.eu-central-1.amazonaws.com/s3fs-public/rbfa/img/players/internationals/football/men/6392.jpg',
+  'Zeno Debast': 'https://belgianfootball.s3.eu-central-1.amazonaws.com/s3fs-public/rbfa/img/players/internationals/football/men/6868.jpg',
+  'Arthur Theate': 'https://belgianfootball.s3.eu-central-1.amazonaws.com/s3fs-public/rbfa/img/players/internationals/football/men/6573.jpg',
+  'Youri Tielemans': 'https://belgianfootball.s3.eu-central-1.amazonaws.com/s3fs-public/rbfa/img/players/internationals/football/men/6135.jpg',
+  'Dodi Lukébakio': 'https://belgianfootball.s3.eu-central-1.amazonaws.com/s3fs-public/rbfa/img/players/internationals/football/men/6818.jpg',
+  'Kevin De Bruyne': 'https://belgianfootball.s3.eu-central-1.amazonaws.com/s3fs-public/rbfa/img/players/internationals/football/men/5733.jpg',
+  'Loïs Openda': 'https://belgianfootball.s3.eu-central-1.amazonaws.com/s3fs-public/rbfa/img/players/internationals/football/men/6575.jpg'
+};
