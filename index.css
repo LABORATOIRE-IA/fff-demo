@@ -1,0 +1,242 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-500: #1e73be;
+  --color-blue-600: #002395;
+  --color-blue-700: #1e73be;
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #e2e8f0;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #64748b;
+  --color-slate-700: #0f172a;
+  --color-slate-800: #0f172a;
+  --color-emerald-500: #10b981;
+  --color-red-600: #e10600;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
+  --shadow-2xs: 0 1px 3px rgb(0 0 0 / 5%);
+  --shadow-xs: 0 1px 3px rgb(0 0 0 / 5%);
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+:root {
+  --ams-blue-primary: #002395;
+  --ams-blue-light: #1e73be;
+  --ams-red-accent: #e10600;
+  --ams-bg-main: #f8fafc;
+  --ams-surface-card: #ffffff;
+  --ams-border-light: #e2e8f0;
+  --ams-disabled-bg: #f1f5f9;
+  --ams-text-primary: #0f172a;
+  --ams-text-secondary: #64748b;
+  --ams-text-disabled: #94a3b8;
+  --ams-success-green: #10b981;
+  --ams-card-radius: 12px;
+  --ams-card-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+@layer base {
+  body {
+    @apply antialiased;
+    background-color: var(--ams-bg-main);
+    color: var(--ams-text-primary);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    background-color: var(--ams-blue-primary);
+    color: #ffffff;
+  }
+
+  :disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  input[type="checkbox"] {
+    accent-color: var(--ams-blue-primary);
+    border-radius: 6px;
+    transition: accent-color 160ms ease, box-shadow 160ms ease;
+  }
+}
+
+/* Custom delicate scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ams-disabled-bg);
+}
+.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ams-border-light);
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ams-text-disabled);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+.ams-dashboard {
+  --color-amber-50: #eff6ff;
+  --color-amber-100: #dbeafe;
+  --color-amber-200: #bfdbfe;
+  --color-amber-300: #bfdbfe;
+  --color-amber-400: #ffffff;
+  --color-amber-500: #1e73be;
+  --color-amber-600: #002395;
+  --color-amber-700: #002395;
+  --color-amber-800: #002395;
+  --color-amber-900: #002395;
+  --color-amber-950: #001b59;
+  --color-orange-50: #eff6ff;
+  --color-orange-100: #dbeafe;
+  --color-orange-200: #bfdbfe;
+  --color-orange-400: #ffffff;
+  --color-orange-500: #1e73be;
+  --color-orange-600: #002395;
+  --color-rose-50: #eff6ff;
+  --color-rose-100: #dbeafe;
+  --color-rose-200: #bfdbfe;
+  --color-rose-300: #bfdbfe;
+  --color-rose-400: #ffffff;
+  --color-rose-500: #1e73be;
+  --color-rose-600: #002395;
+  --color-rose-700: #002395;
+  --color-rose-800: #002395;
+  --color-rose-900: #002395;
+  --color-rose-950: #001b59;
+  --color-emerald-50: #eff6ff;
+  --color-emerald-100: #dbeafe;
+  --color-emerald-200: #bfdbfe;
+  --color-emerald-300: #bfdbfe;
+  --color-emerald-400: #ffffff;
+  --color-emerald-500: #1e73be;
+  --color-emerald-600: #002395;
+  --color-emerald-700: #002395;
+  --color-emerald-800: #002395;
+  --color-emerald-900: #002395;
+  --color-emerald-950: #001b59;
+  --color-indigo-50: #eff6ff;
+  --color-indigo-100: #dbeafe;
+  --color-indigo-200: #bfdbfe;
+  --color-indigo-300: #bfdbfe;
+  --color-indigo-400: #ffffff;
+  --color-indigo-500: #1e73be;
+  --color-indigo-600: #002395;
+  --color-indigo-700: #002395;
+  --color-indigo-800: #002395;
+  --color-indigo-900: #001b59;
+  --color-indigo-950: #001b59;
+}
+
+.ams-dashboard [class*="bg-gradient-to-"][class*="text-white"] {
+  background-image: none;
+  background-color: #ffffff;
+  border-color: #002395;
+  color: #002395;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+  padding: 18px;
+}
+
+.ams-dashboard [class*="bg-gradient-to-"][class*="text-white"] > .pointer-events-none {
+  display: none;
+}
+
+.ams-dashboard [class*="bg-gradient-to-"]:not([class*="text-white"]) {
+  background-image: none;
+  background-color: #eff6ff;
+}
+
+.ams-dashboard [class*="shadow-xl"],
+.ams-dashboard [class*="shadow-2xl"] {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+.ams-dashboard [class*="bg-gradient-to-"][class*="text-white"] h2 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.ams-dashboard [class*="bg-gradient-to-"][class*="text-white"] :is(
+  [class*="text-white"], [class*="text-blue-"], [class*="text-indigo-"],
+  [class*="text-amber-"], [class*="text-emerald-"], [class*="text-rose-"],
+  [class*="text-slate-"]
+) {
+  color: #002395;
+}
+
+.ams-dashboard [class*="bg-gradient-to-"][class*="text-white"] :is(
+  [class*="bg-blue-9"], [class*="bg-indigo-9"], [class*="bg-amber-9"],
+  [class*="bg-emerald-9"], [class*="bg-rose-9"], [class*="bg-slate-9"]
+) {
+  background-color: #eff6ff;
+  border-color: #dbeafe;
+}
+
+.ams-dashboard [class*="bg-gradient-to-"][class*="text-white"] button[class] {
+  background-color: #002395;
+  border: 1px solid #002395;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.ams-dashboard [class*="bg-gradient-to-"][class*="text-white"] button[class] * {
+  color: #ffffff;
+}
+
+.ams-dashboard > :is(section, div)[class*="border"],
+.ams-dashboard > .w-full > div > :is(div, section)[class*="border"] {
+  border-color: #002395;
+}
+
+.ams-predictive-engine {
+  --color-amber-50: #eff6ff;
+  --color-amber-100: #dbeafe;
+  --color-amber-200: #bfdbfe;
+  --color-amber-500: #1e73be;
+  --color-amber-600: #002395;
+  --color-amber-700: #002395;
+  --color-amber-800: #002395;
+  --color-amber-900: #002395;
+  --color-amber-950: #001b59;
+  --color-indigo-50: #eff6ff;
+  --color-indigo-100: #dbeafe;
+  --color-indigo-500: #1e73be;
+  --color-indigo-600: #002395;
+  --color-indigo-900: #002395;
+  --color-purple-50: #eff6ff;
+  --color-purple-100: #dbeafe;
+  --color-purple-200: #bfdbfe;
+  --color-purple-600: #002395;
+  --color-purple-700: #002395;
+  --color-purple-950: #001b59;
+  --color-emerald-50: #eff6ff;
+  --color-emerald-100: #dbeafe;
+  --color-emerald-200: #bfdbfe;
+  --color-emerald-500: #1e73be;
+  --color-emerald-600: #002395;
+  --color-emerald-700: #002395;
+  --color-emerald-800: #002395;
+}
+
+.ams-predictive-engine [class*="rounded-3xl"] {
+  border-radius: 8px;
+}
