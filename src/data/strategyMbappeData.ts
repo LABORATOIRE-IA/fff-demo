@@ -74,6 +74,27 @@ export interface MbappeRecoveryPlanData {
     source: string;
     status: 'ok' | 'watch' | 'action';
   }[];
+  aiRiskPrediction: AIRiskPrediction;
+}
+
+export interface AIRiskFactor {
+  label: string;
+  value: string;
+  impact: number; // points de risque (+ augmente, - réduit)
+  source: string;
+  explanation: string;
+}
+
+export interface AIRiskPrediction {
+  nextMatch: string;
+  baselineRisk: number; // %
+  recommendedMinutes: number;
+  confidence: number; // %
+  modelDescription: string;
+  factors: AIRiskFactor[];
+  minutesScenarios: { minutes: number; risk: number }[];
+  trend: { date: string; risk: number }[];
+  analysisSteps: { title: string; detail: string }[];
 }
 
 export const MBAPPE_KNEE_PLAN_DATA: MbappeRecoveryPlanData = {
@@ -420,5 +441,76 @@ export const MBAPPE_KNEE_PLAN_DATA: MbappeRecoveryPlanData = {
       source: 'Alexandre Germain (Pôle GPS)',
       status: 'action'
     }
-  ]
+  ],
+  aiRiskPrediction: {
+    nextMatch: `${UPCOMING_MATCH.title} (${UPCOMING_MATCH.date})`,
+    baselineRisk: 15,
+    recommendedMinutes: 70,
+    confidence: 87,
+    modelDescription: 'Modèle prédictif entraîné sur 1 240 retours au jeu après lésion ligamentaire du genou (football élite).',
+    factors: [
+      {
+        label: 'Lésion LLI récente',
+        value: 'J+8 post-entorse',
+        impact: 9,
+        source: 'Dossier médical FFF',
+        explanation: 'Le tissu ligamentaire reste en remodelage : le risque de récidive est maximal dans les 3 semaines.'
+      },
+      {
+        label: 'Symétrie de force Cybex',
+        value: '92 % (cible ≥ 95 %)',
+        impact: 5,
+        source: 'Isocinétisme Cybex',
+        explanation: 'Un déficit de force > 5 % du quadriceps augmente les contraintes en valgus lors des appuis.'
+      },
+      {
+        label: 'Œdème résiduel',
+        value: '85 % résorbé',
+        impact: 3,
+        source: 'IRM Clairefontaine',
+        explanation: 'Les 15 % restants signalent une cicatrisation encore incomplète.'
+      },
+      {
+        label: 'Douleur à l’effort',
+        value: 'EVA 1/10',
+        impact: 1,
+        source: 'Questionnaire EVA',
+        explanation: 'Douleur quasi nulle : impact marginal sur le risque.'
+      },
+      {
+        label: 'Charge aiguë / chronique',
+        value: 'ACWR 1.12',
+        impact: -2,
+        source: 'GPS Catapult (28 j)',
+        explanation: 'Charge dans la zone optimale (0.8–1.3) : pas de pic de charge brutal.'
+      },
+      {
+        label: 'Équilibre Y-Balance',
+        value: '96 % du côté sain',
+        impact: -3,
+        source: 'Tests fonctionnels kiné',
+        explanation: 'Bon contrôle neuromusculaire : protège le genou lors des changements de direction.'
+      }
+    ],
+    minutesScenarios: [
+      { minutes: 45, risk: 18 },
+      { minutes: 60, risk: 23 },
+      { minutes: 70, risk: 28 },
+      { minutes: 90, risk: 41 }
+    ],
+    trend: [
+      { date: '25/09', risk: 72 },
+      { date: '27/09', risk: 58 },
+      { date: '29/09', risk: 44 },
+      { date: '30/09', risk: 36 },
+      { date: '01/10', risk: 31 },
+      { date: '02/10', risk: 28 }
+    ],
+    analysisSteps: [
+      { title: 'Collecte', detail: 'IRM, Cybex, EVA, GPS et tests kiné synchronisés chaque jour.' },
+      { title: 'Comparaison', detail: 'Profil comparé à 1 240 cas similaires (âge, poste, lésion).' },
+      { title: 'Pondération', detail: 'Chaque facteur ajoute ou retire des points au risque de base.' },
+      { title: 'Recommandation', detail: 'Le staff médical valide ou ajuste la proposition de l’IA.' }
+    ]
+  }
 };

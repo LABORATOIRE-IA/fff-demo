@@ -16,12 +16,29 @@ import {
   Layers,
   UserCheck,
   Zap,
-  FileCheck
+  FileCheck,
+  Brain,
+  TrendingDown,
+  Info
 } from 'lucide-react';
+
+const riskTone = (risk: number) =>
+  risk < 25
+    ? { label: 'Faible', text: 'text-emerald-700', bg: 'bg-emerald-500', soft: 'bg-emerald-50 border-emerald-200' }
+    : risk < 35
+    ? { label: 'Modéré', text: 'text-amber-700', bg: 'bg-amber-500', soft: 'bg-amber-50 border-amber-200' }
+    : { label: 'Élevé', text: 'text-rose-700', bg: 'bg-rose-500', soft: 'bg-rose-50 border-rose-200' };
 
 export const AIStrategyMedicalMbappeView: React.FC = () => {
   const { navigateTo, openMedicalModal } = useAMS();
   const planData = MBAPPE_KNEE_PLAN_DATA;
+  const ai = planData.aiRiskPrediction;
+  const [selectedMinutes, setSelectedMinutes] = useState<number>(ai.recommendedMinutes);
+  const [hoveredFactor, setHoveredFactor] = useState<number | null>(null);
+  const scenarioRisk = ai.minutesScenarios.find((s) => s.minutes === selectedMinutes)?.risk ?? 0;
+  const scenarioTone = riskTone(scenarioRisk);
+  const maxFactorImpact = Math.max(...ai.factors.map((f) => Math.abs(f.impact)));
+  const maxTrendRisk = Math.max(...ai.trend.map((t) => t.risk));
 
   // Selected RTP phase
   const [selectedPhaseId, setSelectedPhaseId] = useState<RTPPhaseId>(planData.currentPhase);
@@ -165,6 +182,178 @@ export const AIStrategyMedicalMbappeView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ========================================================================= */}
+      {/* 2b. PRÉDICTION IA • RISQUE DE BLESSURE AU PROCHAIN MATCH                  */}
+      {/* ========================================================================= */}
+      <section className="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-5 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2">
+            <Brain className="w-4 h-4 text-violet-600" />
+            <div>
+              <h2 className="text-sm font-black text-slate-900 uppercase tracking-wide">
+                Prédiction IA • Risque de blessure au prochain match
+              </h2>
+              <p className="text-[11px] text-slate-500 font-medium">{ai.nextMatch}</p>
+            </div>
+          </div>
+          <span className="text-[10px] font-mono font-bold text-violet-800 bg-violet-50 px-2.5 py-1 rounded-full border border-violet-200 flex items-center gap-1">
+            <Sparkles className="w-3 h-3" />
+            Fiabilité du modèle : {ai.confidence}%
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Score + simulateur de minutes */}
+          <div className="lg:col-span-4 space-y-3">
+            <div className={`rounded-2xl border p-4 ${scenarioTone.soft}`}>
+              <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
+                Risque estimé · {selectedMinutes} min jouées
+              </span>
+              <div className="flex items-end gap-2 mt-1">
+                <span className={`text-4xl font-black font-mono ${scenarioTone.text}`}>{scenarioRisk}%</span>
+                <span className={`mb-1.5 text-xs font-bold ${scenarioTone.text}`}>{scenarioTone.label}</span>
+              </div>
+              <div className="mt-3 h-2 rounded-full bg-white/80 overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-300 ${scenarioTone.bg}`} style={{ width: `${scenarioRisk}%` }} />
+              </div>
+              <div className="mt-1 flex justify-between text-[9px] font-mono text-slate-400">
+                <span>0%</span>
+                <span>Seuil d’alerte 35%</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2">
+              <h4 className="text-xs font-bold text-slate-900">Simuler le temps de jeu</h4>
+              <div className="grid grid-cols-4 gap-1.5">
+                {ai.minutesScenarios.map((s) => (
+                  <button
+                    type="button"
+                    key={s.minutes}
+                    onClick={() => setSelectedMinutes(s.minutes)}
+                    aria-pressed={selectedMinutes === s.minutes}
+                    className={`rounded-lg border px-2 py-1.5 text-[11px] font-bold transition-colors cursor-pointer ${
+                      selectedMinutes === s.minutes
+                        ? 'bg-rose-600 border-rose-600 text-white'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {s.minutes}′
+                  </button>
+                ))}
+              </div>
+              <p className="text-[11px] text-slate-600 leading-snug">
+                {selectedMinutes === ai.recommendedMinutes
+                  ? `Recommandation IA : sortie vers la ${ai.recommendedMinutes}e minute, compromis entre impact sportif et sécurité du genou.`
+                  : scenarioRisk > 35
+                  ? 'Au-delà de 75 min, la fatigue excentrique fait dépasser le seuil d’alerte.'
+                  : 'Risque réduit, mais temps de jeu limité pour le schéma offensif.'}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-slate-900">Évolution du risque</h4>
+                <span className="text-[10px] font-bold text-emerald-700 flex items-center gap-1">
+                  <TrendingDown className="w-3 h-3" />
+                  {ai.trend[0].risk - ai.trend[ai.trend.length - 1].risk} pts
+                </span>
+              </div>
+              <div className="mt-3 flex items-end gap-1.5 h-20">
+                {ai.trend.map((t) => (
+                  <div key={t.date} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                    <span className="text-[9px] font-mono text-slate-500">{t.risk}</span>
+                    <div className={`w-full rounded-t ${riskTone(t.risk).bg}`} style={{ height: `${(t.risk / maxTrendRisk) * 100}%` }} />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-1 flex gap-1.5">
+                {ai.trend.map((t) => (
+                  <span key={t.date} className="flex-1 text-center text-[9px] font-mono text-slate-400">{t.date}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Explication des facteurs */}
+          <div className="lg:col-span-8 rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+            <div>
+              <h4 className="text-xs font-bold text-slate-900">Comment l’IA arrive à {ai.minutesScenarios.find((s) => s.minutes === ai.recommendedMinutes)?.risk}% (scénario {ai.recommendedMinutes} min)</h4>
+              <p className="mt-0.5 text-[11px] text-slate-500">
+                Partant du risque moyen d’un attaquant international, chaque donnée ajoute (rouge) ou retire (vert) des points. Survolez un facteur pour le détail.
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-3 rounded-lg bg-white border border-slate-200 px-3 py-2">
+                <span className="w-40 shrink-0 text-xs font-bold text-slate-700">Risque de base</span>
+                <span className="flex-1 text-[11px] text-slate-500">Population de référence</span>
+                <span className="w-12 text-right text-xs font-black font-mono text-slate-900">{ai.baselineRisk}%</span>
+              </div>
+
+              {ai.factors.map((f, i) => {
+                const width = (Math.abs(f.impact) / maxFactorImpact) * 50;
+                const isUp = f.impact > 0;
+                return (
+                  <div
+                    key={f.label}
+                    onMouseEnter={() => setHoveredFactor(i)}
+                    onMouseLeave={() => setHoveredFactor(null)}
+                    className={`rounded-lg border px-3 py-2 transition-colors ${
+                      hoveredFactor === i ? 'bg-white border-violet-300' : 'bg-white/70 border-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-40 shrink-0">
+                        <span className="block text-xs font-bold text-slate-800">{f.label}</span>
+                        <span className="block text-[10px] font-mono text-slate-500">{f.value}</span>
+                      </div>
+                      <div className="relative flex-1 h-3">
+                        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-300" />
+                        <div
+                          className={`absolute top-0 h-3 rounded ${isUp ? 'bg-rose-400' : 'bg-emerald-400'}`}
+                          style={isUp ? { left: '50%', width: `${width}%` } : { right: '50%', width: `${width}%` }}
+                        />
+                      </div>
+                      <span className={`w-12 text-right text-xs font-black font-mono ${isUp ? 'text-rose-700' : 'text-emerald-700'}`}>
+                        {isUp ? '+' : '−'}{Math.abs(f.impact)}
+                      </span>
+                    </div>
+                    {hoveredFactor === i && (
+                      <p className="mt-1.5 text-[11px] text-slate-600 leading-snug">
+                        {f.explanation} <span className="text-slate-400">· Source : {f.source}</span>
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+
+              <div className="flex items-center gap-3 rounded-lg bg-violet-50 border border-violet-200 px-3 py-2">
+                <span className="w-40 shrink-0 text-xs font-black text-violet-900">Risque prédit</span>
+                <span className="flex-1 text-[11px] text-violet-700">Base + somme des facteurs</span>
+                <span className="w-12 text-right text-sm font-black font-mono text-violet-900">
+                  {ai.baselineRisk + ai.factors.reduce((sum, f) => sum + f.impact, 0)}%
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-1">
+              {ai.analysisSteps.map((step, i) => (
+                <div key={step.title} className="rounded-lg border border-slate-200 bg-white p-2.5">
+                  <span className="text-[10px] font-black text-violet-700">{i + 1}. {step.title}</span>
+                  <p className="mt-0.5 text-[10px] text-slate-600 leading-snug">{step.detail}</p>
+                </div>
+              ))}
+            </div>
+
+            <p className="flex items-start gap-1.5 text-[10px] text-slate-500">
+              <Info className="w-3 h-3 mt-0.5 shrink-0" />
+              <span>{ai.modelDescription} Aide à la décision : la décision finale reste celle du médecin.</span>
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* ========================================================================= */}
       {/* 3. LES 4 PHASES DU PROTOCOLE DE SOINS & RÉATHLÉTISATION                   */}
